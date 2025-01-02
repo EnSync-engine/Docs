@@ -13,7 +13,7 @@ services:
       - "8443:8443"
     volumes:
       - type: bind
-        source: /${STORAGE_DIR}
+        source: $HOST/${STORAGE_DIR}
         target: /${STORAGE_DIR}
     networks:
       - ensync-shared-network
@@ -33,6 +33,8 @@ networks:
     driver: bridge
 volumes:
   ensync_data:
+
+
 
 
 
