@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  INSTANCE: ${{ secrets.DOCKERHUB_USERNAME }}/ensync-docs
+  INSTANCE: Writerside/ensync-doc
   DOCKER_VERSION: '243.22562'
 
 jobs:
