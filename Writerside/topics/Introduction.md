@@ -20,7 +20,7 @@
 <p>Before we continue, we wanted to clarify a couple of buzz words you may occasionally find in this documentation.</p>
 <procedure title="Buzz Words" id="two-parts-engine">
     <step>
-        <p>Events: <br>
+        <p>Events: <br/>
             <i>Notification that an action has occurred or a task has started, been updated or even completed.</i></p>
     </step>
     <step>
