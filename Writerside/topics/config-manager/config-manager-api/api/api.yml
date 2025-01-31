@@ -1,0 +1,478 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: EnSync
+  description: EnSync management service
+servers:
+  - url: http://localhost:8080/api/v1/ensync
+    description: localhost server
+paths:
+  /ping:
+    get:
+      tags: [ "ping" ]
+      operationId: ping
+      responses:
+        '200':
+          description: pong
+  /api/v1/ensync/event:
+    post:
+      tags: [ "event-definition" ]
+      operationId: postEventDefinition
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostEventDefinition'
+      responses:
+        '200':
+          description: event definition
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+    get:
+      tags: [ "event-definition" ]
+      operationId: getEventDefinitions
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: '#/components/parameters/eventDefinitionName'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/order'
+        - $ref: '#/components/parameters/pageIndex'
+        - $ref: '#/components/parameters/orderBy'
+      responses:
+        '200':
+          description: Returns a list of event definitions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDefinitionListResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+  /api/v1/ensync/event/{id}:
+    put:
+      tags: ["event-definition"]
+      operationId: updateEventDefinitionByID
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "The id of the selected event"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutEventDefinition'
+      responses:
+        '200':
+          description: Event updated
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+  /api/v1/ensync/event/{name}:
+    get:
+      tags: ["event-definition"]
+      operationId: getEventDefinitionByName
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "The name of the selected event"
+      responses:
+        '200':
+          description: Returns the selected event template
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEventDefinitionDetailedByName'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+  /api/v1/ensync/access/verify/{accessKey}:
+    get:
+      tags: ["access-key"]
+      security:
+        - ApiKeyAuth: []
+      operationId: verifyAccessKey
+      parameters:
+        - name: accessKey
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "Access key"
+      responses:
+        '200':
+          description: Key verification successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessKeyVerificationResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+  /api/v1/ensync/access-key:
+    post:
+      tags: ["access-key"]
+      operationId: createAccessKey
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostAccessKey'
+      responses:
+        '200':
+          description: Key verification successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessKeyResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+    get:
+      tags: ["access-key"]
+      operationId: getAccessKeys
+      parameters:
+        - $ref: '#/components/parameters/accessKey'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/order'
+        - $ref: '#/components/parameters/pageIndex'
+        - $ref: '#/components/parameters/orderBy'
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: access keys
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessKeyListResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+  /api/v1/ensync/access-key/permissions/{accessKey}:
+    post:
+      tags: ["access-key"]
+      operationId: setAccessKeyPermission
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: accessKey
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "Access key"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostAccessKeyPermissions'
+      responses:
+        '200':
+          description: Access key permissions set
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+    get:
+      tags: ["access-key"]
+      operationId: getAccessKeyPermissions
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: accessKey
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "Access key"
+      responses:
+        '200':
+          description: Returns access key permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAccessKeyPermissionsResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+components:
+  parameters:
+    eventDefinitionName:
+      in: query
+      name: name
+      required: false
+      schema:
+        type: string
+      description: "The name of the event to filter"
+    accessKey:
+      in: query
+      name: accessKey
+      required: false
+      schema:
+        type: string
+      description: "The key to filter"
+    pageIndex:
+      in: query
+      name: pageIndex
+      required: true
+      schema:
+        type: integer
+      example: 1
+      x-oapi-codegen-extra-tags:
+        validate: gte=0
+    limit:
+      in: query
+      name: limit
+      required: true
+      schema:
+        type: integer
+      example: 10
+      x-oapi-codegen-extra-tags:
+        validate: gt=0,lte=100
+    order:
+      in: query
+      name: order
+      required: true
+      schema:
+        type: string
+        enum:
+          - ASC
+          - DESC
+          - asc
+          - desc
+    orderBy:
+      in: query
+      name: orderBy
+      required: true
+      schema:
+        type: string
+        enum:
+          - name
+          - createdAt
+      x-oapi-codegen-extra-tags:
+        validate: oneof=name,createdAt
+  schemas:
+    PostAccessKeyPermissions:
+      type: object
+      required:
+        - send
+        - receive
+      properties:
+        send:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permissions'
+        receive:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permissions'
+    Permissions:
+      type: string
+    PostAccessKey:
+      type: object
+      required:
+        - permissions
+      properties:
+        permissions:
+          $ref: '#/components/schemas/PostAccessKeyPermissions'
+    AccessKeyVerificationResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: boolean
+    AccessKeyResponse:
+      type: object
+      required:
+        - accessKey
+      properties:
+        accessKey:
+          type: string
+    GetAccessKeyPermissionsResponse:
+      type: object
+      required:
+        - permissions
+        - key
+        - createdAt
+      properties:
+        key:
+          type: string
+          description: "The access key associated with the permissions."
+        createdAt:
+          type: string
+          format: date-time
+          description: "The timestamp when the access key was created."
+        permissions:
+          type: object
+          required:
+            - send
+            - receive
+          properties:
+            send:
+              type: array
+              items:
+                type: string
+                description: "List of permissions to send."
+            receive:
+              type: array
+              items:
+                type: string
+                description: "List of permissions to receive."
+    AccessKeyListResponse:
+      description: Model for AccessKetListResponse
+      type: object
+      required:
+        - resultsLength
+        - results
+      properties:
+        resultsLength:
+          type: integer
+          example: 10
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetAccessKeyPermissionsResponse'
+    GetEventDefinitionDetailedByName:
+      type: object
+      required:
+        - id
+        - name
+        - link
+        - payload
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        payload:
+          type: object
+          additionalProperties:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    EventDefinitionListResponse:
+      description: Model for EventDefinitionListResponse
+      type: object
+      required:
+        - resultsLength
+        - results
+      properties:
+        resultsLength:
+          type: integer
+          example: 10
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventDefinitionItem'
+    EventDefinitionItem:
+      type: object
+      required:
+        - id
+        - name
+        - payload
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+        payload:
+          type: object
+          additionalProperties:
+            type: string
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PutEventDefinition:
+      type: object
+      required:
+        - name
+        - payload
+      properties:
+        name:
+          type: string
+        payload:
+          type: object
+          additionalProperties:
+            type: string
+    PostEventDefinition:
+      type: object
+      required:
+        - payload
+        - name
+      properties:
+        name:
+          type: string
+        payload:
+          type: object
+          additionalProperties:
+            type: string
+    InternalItem:
+      type: object
+      required:
+        - key
+      properties:
+        key:
+          type: string
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header 
+      name: X-API-KEY

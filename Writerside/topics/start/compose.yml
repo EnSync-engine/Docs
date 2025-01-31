@@ -1,7 +1,3 @@
-# Start EnSync with Docker Compose
-
-#### Start the EnSync engine
-```bash
 name: ensync-engine
 services:
   master-node:
@@ -26,16 +22,10 @@ services:
     volumes:
       - ensync_data:/app/data
     networks:
-     - ensync-shared-network
+      - ensync-shared-network
     restart: unless-stopped
 networks:
   ensync-shared-network:
     driver: bridge
 volumes:
   ensync_data:
-
-
-
-
-
-```

@@ -3,10 +3,14 @@
 <buildprofiles xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/build-profiles.xsd"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <variables></variables>
+    <sitemap priority="0.35" change-frequency="monthly"/>
+    <variables>
+        <offline-docs>true</offline-docs>
+    </variables>
+
     <build-profile instance="ensync-cli">
         <variables>
-            <noindex-content>true</noindex-content>
+            <noindex-content>false</noindex-content>
         </variables>
     </build-profile>
 
