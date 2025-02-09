@@ -1,4 +1,4 @@
-FROM jetbrains/writerside-builder:243.22562 as build
+FROM jetbrains/writerside-builder:243.22562 AS build
 
 ARG INSTANCE="Writerside/ensync-doc"
 
@@ -13,6 +13,6 @@ RUN export DISPLAY=:99 && Xvfb :99 & /opt/builder/bin/idea.sh helpbuilderinspect
 WORKDIR /opt/wrs-output
 RUN unzip -O UTF-8 webHelpENSYNC-DOC2-all.zip -d /opt/wrs-output/unzipped-artifact
 
-FROM httpd:2.4 as http-server
+FROM httpd:2.4 AS http-server
 
 COPY --from=build /opt/wrs-output/unzipped-artifact/ /usr/local/apache2/htdocs/

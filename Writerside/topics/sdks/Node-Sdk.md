@@ -1,143 +1,233 @@
 # Node SDK
 
+---
+
 ## Full Documentation
 
-This is the client SDK for EnSync engine (event-delivery based integration engine) that enables you integrate with third-party apps as they though they were native to your system and in realtime.
-<br/>
-<br/>
-See [Documentation on EnSync Engine](https://docs.tryensync.com/introduction.html).
-<br/>
+This is the client SDK for EnSync engine (event-delivery based integration engine) that enables you to integrate with third-party apps as though they were native to your system and in realtime.
+
+See [Documentation on EnSync Engine](https://docs.tryensync.com/introduction.html).  
 See [Documentation on Our SDKs](https://docs.tryensync.com/sdk.html).
 
-## How to Install
+---
 
-``` javascript
+## Installation
+
+```bash
 npm install ensync-client-sdk
 ```
 
-## How to Use
+---
 
-``` javascript
-import {EnSyncEngine, EnSyncError} from "ensync-client-sdk"
+## Usage
+
+```javascript
+import { EnSyncEngine, EnSyncError } from "ensync-client-sdk"
 ```
 
-### More Docs
+---
 
-To connect to an EnSync engine, use the command
+## API Reference
 
-``` javascript
-new EnSyncEngine("<url_to_your_ensync>>", <props>)
+### EnSyncEngine
+
+The main class that manages connections and client creation for the EnSync system.
+
+```javascript
+const engine = new EnSyncEngine(url, options)
 ```
 
-Do note that you can connect using http or https. We recommend you use https as this would use http/2 under the hood to improve communication with the engine
+#### Parameters for EnSyncEngine
 
-#### List of supported props would be listed soon
+- `url` (string): The URL of the EnSync server
+- `options` (EnSyncEngineOptions):
+  ```typescript
+  {
+    version?: string;     // API version to use (default: 'v1')
+    disableTls?: boolean; // Whether to disable TLS verification (default: false)
+    ignoreException?: boolean; // Whether to ignore exceptions (default: false)
+    renewAt?: number;     // Time in milliseconds before client renewal (default: 420000)
+  }
+  ```
 
-To communicate with the engine, you would need to create a client (which generates a client Id) which would be used to initiate other actions on the engine's delivery system. To create a client use the below code
+#### Events
+- `error`: Emitted when an error occurs
+- `connect`: Emitted when connection is established
+- `disconnect`: Emitted when connection is closed
 
-``` javascript
-const client = await ensyncClient.createClient(<access_token>)
+---
+
+### Client Creation
+
+```javascript
+const client = await engine.createClient(accessKey)
 ```
 
-With you client now created, you can now start communication with the engine.
+#### Parameters [Client Creation]
+- `accessKey` (string): The access key for authentication
 
-#### To Publish a message
+#### Returns [Client Creation]
+Returns a new EnSyncClient instance
 
-``` javascript
-await client.publish(<event_name>, <payload>)
+---
+
+### Publishing Events
+
+```javascript
+await client.publish(eventName, payload, metadata)
 ```
 
-#### To Subscribe to a message
+#### Parameters [Publishing Events]
+- `eventName` (string): The name of the event to publish
+- `payload` (any): User-defined data structure to be published
+- `metadata` (EnSyncPublishOptions):
+  ```typescript
+  {
+    persist?: boolean;    // Whether to persist the event (default: true)
+    headers?: Object;     // Additional headers
+  }
+  ```
 
-``` javascript
-const sub = await client.subscribe(<event_name>, {subscribeOnly: false})
+#### Example
+```javascript
+await client.publish('power-usage', {
+  current: 100,
+  unit: 'kWh',
+  source: 'power-meter-1',
+  timestamp: Date.now()
+});
 ```
 
-#### To Unsubscribe
+---
 
-``` javascript
-sub.unsubscribe()
+### Subscribing to Events
+
+```javascript
+const subscription = await client.subscribe(eventName)
 ```
 
-#### To pull and acknowledge messages published to an event name use
+#### Parameters [Subscribing to Events]
+- `eventName` (string): The name of the event to subscribe to
 
-``` javascript
-sub.pull({autoAck: false}, async (event) => {
-    // You can acknowledge after each pull here, but if you prefer the client sdk to auto acknowledge, set autoAck to true
-    // Messing up with the block would lead to your message read not being acknowledged
-    await client.ack(event.id, event.block)
-})
+#### Returns
+Returns a subscription object with the following methods:
+```typescript
+{
+  pull: (options: EnSyncSubscribeOptions, callback: (record: EnSyncEventPayload) => Promise<void>) => void;
+  ack: (eventId: string, block: string) => Promise<string>;
+  rollback: (eventId: string, block: string) => Promise<string>;
+  stream: (options: EnSyncSubscribeOptions, callback: (record: EnSyncEventPayload) => Promise<void>) => void;
+  unsubscribe: () => Promise<string>;
+}
 ```
 
-#### To Close connection, use
+---
 
-``` javascript
-client.close()
+### Received Event Structure (EnSyncEventPayload)
+When receiving events through subscription callbacks, the events will have this structure:
+```typescript
+{
+  id: string;         // Event identifier
+  block: string;      // Block identifier
+  name: string;       // Event name
+  data: any;          // User-defined event data
+  timestamp: number;  // Event timestamp
+  header: Object;     // Additional header information
+}
 ```
 
-<br/>
+---
 
-### Code Sample for Event Producer
+### Closing Connections
 
-``` javascript
-const {
-    EnSyncEngine
-} = require("ensync-client-sdk")
+```javascript
+await client.destroy(stopEngine)
+```
+
+#### Parameters
+- `stopEngine` (boolean, optional): If true, also closes the underlying engine connection. Set to false to keep the engine running for other clients. (default: false)
+
+---
+
+## Complete Examples
+
+### Event Producer
+```javascript
+const { EnSyncEngine } = require("ensync-client-sdk");
 
 const response = async () => {
-    try {
-        const eventName = "yourcompany/payment/POS/PAYMENT_SUCCESSFUL" // Event Created using the ensync-cli see ()
-        const ensyncClient = new EnSyncEngine("https://localhost:8443", {disableTls: true})
-        const client = await ensyncClient.createClient("xxxxxxxxxxxxxxxxxx")
-
-        // Imitates microservice sending multiple events
-        for (let index = 0; index < 60000; index++) {
-            await client.publish(eventName, {name: "hi", responseType: index, transactionId: 1+index})
-            console.log("index", index)
-        }
-        client.close()
-
-    } catch(e) {
-        console.log("Error", e?.message)
-    }
+  try {
+    const eventName = "yourcompany/payment/POS/PAYMENT_SUCCESSFUL";
+    const engine = new EnSyncEngine("https://localhost:8443", {
+      disableTls: true
+    });
+    
+    const client = await engine.createClient("your-access-key");
+    
+    // Payload is user-defined
+    await client.publish(eventName, {
+      transactionId: "123",
+      amount: 100,
+      terminal: "pos-1",
+      timestamp: Date.now()
+    });
+    
+    await client.destroy();
+  } catch(e) {
+    console.error("Error:", e?.message);
+  }
 }
-response()
 ```
 
-### Code Sample for Event Subscriber
+---
 
-``` javascript
-const {
-  EnSyncEngine
-} = require("ensync-client-sdk")
+### Event Subscriber
+```javascript
+const { EnSyncEngine } = require("ensync-client-sdk");
 
 const response = async () => {
-    try {
-        const eventName = "yourcompany/payment/POS/PAYMENT_SUCCESSFUL"
-        const ensyncClient = new EnSyncEngine("https://localhost:8443", {disableTls: true})
-        const client = await ensyncClient.createClient("xxxxxxxxx")
-
-        // You have to subscribe to the event before you pullRecords else the system would not identify your client as subscribed to receive this event
-        const sub = await client.subscribe(eventName, {subscribeOnly: false})
-
-        sub.pull({autoAck: false},
-         async (event) => {
-          try {
-           console.log("event 1", event)
-           // Acknowledge message read
-           const ack = await sub.ack(event.id, event.block)
-           // Unsubscribe
-           await sub.unsubscribe(eventName)
-           console.log("acknowledged", event.id, ack, "\n")
-          } catch (e) {
-           console.log("Exception", e)
-          }
-        })
-
-    } catch(e) {
-        console.log("I got here")
-        console.log("e", e.message)
-    }
+  try {
+    const eventName = "yourcompany/payment/POS/PAYMENT_SUCCESSFUL";
+    const engine = new EnSyncEngine("https://localhost:8443", {
+      disableTls: true
+    });
+    
+    const client = await engine.createClient("your-access-key");
+    const subscription = await client.subscribe(eventName);
+    
+    subscription.pull({ autoAck: false }, async (event) => {
+      try {
+        // event is an EnSyncEventPayload
+        console.log("Event ID:", event.id);
+        console.log("Event Block:", event.block);
+        console.log("Event Data:", event.data);  // Contains the user-defined payload
+        console.log("Event Timestamp:", event.timestamp);
+        
+        await subscription.ack(event.id, event.block);
+        await subscription.unsubscribe();
+      } catch (e) {
+        console.error("Processing error:", e);
+      }
+    });
+  } catch(e) {
+    console.error("Error:", e?.message);
+  }
 }
-response()
 ```
+
+---
+
+## Error Handling
+
+The SDK throws `EnSyncError` for various error conditions. Always wrap your code in try-catch blocks to handle potential errors gracefully.
+
+```javascript
+try {
+  // Your EnSync code
+} catch (e) {
+  if (e instanceof EnSyncError) {
+    console.error("EnSync Error:", e.message);
+  } else {
+    console.error("Unexpected error:", e);
+  }
+}
