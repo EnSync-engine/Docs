@@ -193,7 +193,6 @@ ensync-cli event get --access-key {your-access-key} --name "updated/name/name"
 Example 3
 ```bash
 ensync-cli event get --access-key {your-access-key} --name "updated/name/name"
-
 ```
 <br/>
 
@@ -201,22 +200,22 @@ ensync-cli event get --access-key {your-access-key} --name "updated/name/name"
 
 #### List Access Keys
 ```bash
-ensync access-key list
+ensync-cli access-key list --access-key {your-access-key}      
 ```
 
 #### Create Access Key
 ```bash
-ensync access-key  --access-key {your-access-key}  create --permissions '{"send": ["event1"], "receive": ["event2"]}'
+ensync-cli --access-key {your-access-key} access-key permissions create --key {access-key} --permissions '{"send": ["event1"], "receive": ["event2"]}'
 ```
 
 #### Set Permissions
 ```bash
-ensync access-key permissions set --access-key {your-access-key} --permissions '{"send": ["event1"], "receive": ["event2"]}'
+ensync-cli --access-key {your-access-key} access-key permissions set --key {access-key} --permissions '{"send": ["event1"], "receive": ["event2"]}'
 ```
 
 #### Get Permissions
 ```bash
-ensync access-key  --access-key {your-access-key} permissions get --key "MyAccessKey"
+ensync-cli --access-key {your-access-key} access-key permissions get --key {access-key}
 ```
 
 ### General Options
