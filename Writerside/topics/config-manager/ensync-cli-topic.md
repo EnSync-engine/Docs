@@ -124,7 +124,7 @@ To simplify the configuration, add the environment variables to your shell confi
 
 2. Add the following lines:
    ```bash
-   export ENSYNC_BASE_URL="http://localhost:8080/api/v1/ensync" # EnSync's config manager is hosted on port 8080 by default
+   export ENSYNC_BASE_URL="http://{url}/api/v1/ensync"
    export ENSYNC_DEBUG=false
    ```
 
@@ -141,7 +141,7 @@ To set up environment variables on Windows:
 2. In the System Properties window, click on the "Environment Variables" button.
 3. Under "System variables," click "New," and create two variables:
    - **Variable Name**: `ENSYNC_BASE_URL`
-     **Variable Value**: `http://localhost:8080/api/v1/ensync`
+     **Variable Value**: `http://{url}/api/v1/ensync`
    - **Variable Name**: `ENSYNC_DEBUG`
      **Variable Value**: `false`
 4. Click "OK" to save the variables, then close all dialogs.
@@ -167,27 +167,27 @@ export ENSYNC_DEBUG=false
 
 #### List Events
 ```bash
-ensync-cli  --access-key {your-access-key} event list  --page 0 --limit 10 --order DESC --order-by createdAt
+ensync-cli  --access-key {access-key} event list  --page 0 --limit 10 --order DESC --order-by createdAt
 ```
 Example 2
 ```bash
-ensync-cli --access-key {your-access-key} event list --order ASC --order-by name
+ensync-cli --access-key {access-key} event list --order ASC --order-by name
 ```
 <br/>
 
 #### Create Event
 ```bash
-ensync-cli event create --access-key {your-access-key} --name "test-event" --payload '{"key":"value","another":"data"}'
+ensync-cli event create --access-key {access-key} --name "test-event" --payload '{"key":"value","another":"data"}'
 ```
 <br/>
 
 #### Update Event
 ```bash
-ensync-cli --access-key {your-access-key} event update  --id 1 --name "updated/name/name"
+ensync-cli --access-key {access-key} event update  --id 1 --name "updated/name/name"
 
-ensync-cli --access-key {your-access-key} event update  --id 1 --payload '{"key":"new-value"}'
+ensync-cli --access-key {access-key} event update  --id 1 --payload '{"key":"new-value"}'
 
-ensync-cli --access-key {your-access-key} event get --name "updated/name/name"
+ensync-cli --access-key {access-key} event get --name "updated/name/name"
 
 ```
 <br/>
@@ -196,22 +196,22 @@ ensync-cli --access-key {your-access-key} event get --name "updated/name/name"
 
 #### List Access Keys
 ```bash
-ensync-cli --access-key {your-access-key} access-key list 
+ensync-cli --access-key {access-key} access-key list 
 ```
 
 #### Create Access Key
 ```bash
-ensync-cli --access-key {your-access-key} access-key create --permissions '{"send": ["event1"], "receive": ["event2"]}'
+ensync-cli --access-key {access-key} access-key create --permissions '{"send": ["event1"], "receive": ["event2"]}'
 ```
 
 #### Set Permissions
 ```bash
-ensync-cli --access-key {your-access-key} access-key permissions set --key {access-key} --permissions '{"send": ["event1"], "receive": ["event2"]}'
+ensync-cli --access-key {access-key} access-key permissions set --key {access-key} --permissions '{"send": ["event1"], "receive": ["event2"]}'
 ```
 
 #### Get Permissions
 ```bash
-ensync-cli --access-key {your-access-key} access-key permissions get --key {access-key}
+ensync-cli --access-key {access-key} access-key permissions get --key {access-key}
 ```
 
 ### General Options
