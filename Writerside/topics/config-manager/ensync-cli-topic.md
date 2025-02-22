@@ -167,11 +167,11 @@ export ENSYNC_DEBUG=false
 
 #### List Events
 ```bash
-ensync-cli event list --access-key {your-access-key} --page 0 --limit 10 --order DESC --order-by createdAt
+ensync-cli  --access-key {your-access-key} event list  --page 0 --limit 10 --order DESC --order-by createdAt
 ```
 Example 2
 ```bash
-ensync-cli event list --access-key {your-access-key} --order ASC --order-by name
+ensync-cli --access-key {your-access-key} event list --order ASC --order-by name
 ```
 <br/>
 
@@ -183,16 +183,12 @@ ensync-cli event create --access-key {your-access-key} --name "test-event" --pay
 
 #### Update Event
 ```bash
-ensync-cli event update --access-key {your-access-key} --id 1 --name "updated/name/name"
+ensync-cli --access-key {your-access-key} event update  --id 1 --name "updated/name/name"
 
-ensync-cli event update --access-key {your-access-key} --id 1 --payload '{"key":"new-value"}'
+ensync-cli --access-key {your-access-key} event update  --id 1 --payload '{"key":"new-value"}'
 
-ensync-cli event get --access-key {your-access-key} --name "updated/name/name"
+ensync-cli --access-key {your-access-key} event get --name "updated/name/name"
 
-```
-Example 3
-```bash
-ensync-cli event get --access-key {your-access-key} --name "updated/name/name"
 ```
 <br/>
 
@@ -200,12 +196,12 @@ ensync-cli event get --access-key {your-access-key} --name "updated/name/name"
 
 #### List Access Keys
 ```bash
-ensync-cli access-key list --access-key {your-access-key}      
+ensync-cli --access-key {your-access-key} access-key list 
 ```
 
 #### Create Access Key
 ```bash
-ensync-cli --access-key {your-access-key} access-key permissions create --key {access-key} --permissions '{"send": ["event1"], "receive": ["event2"]}'
+ensync-cli --access-key {your-access-key} access-key create --permissions '{"send": ["event1"], "receive": ["event2"]}'
 ```
 
 #### Set Permissions
