@@ -26,11 +26,11 @@ A command-line interface for interacting with the EnSync config management servi
             <code-block lang="shell">curl -L -o CLI_1.0.1_darwin_amd64.tar.gz https://github.com/EnSync-engine/CLI/releases/download/v1.0.1/CLI_1.0.1_darwin_amd64.tar.gz</code-block>
             </tab>
             <tab id="linux-extract-install" title="Linux">
-            <code-block lang="shell">curl -L -o CLI_1.0.0_linux_amd64.tar.gz https://github.com/EnSync-engine/CLI/releases/download/v1.0.0/CLI_1.0.0_linux_amd64.tar.gz</code-block>
+            <code-block lang="shell">curl -L -o CLI_1.0.1_linux_amd64.tar.gz https://github.com/EnSync-engine/CLI/releases/download/v1.0.1/CLI_1.0.1_linux_amd64.tar.gz</code-block>
             </tab>
             <tab id="windows-extract-install" title="Windows">
             <code-block>
-               curl -LO https://github.com/EnSync-engine/CLI/releases/download/CLI_1.0.0_windows_amd64.zip
+               curl -LO https://github.com/EnSync-engine/CLI/releases/download/CLI_1.0.1_windows_amd64.zip
             </code-block>
          </tab>
          </tabs>
@@ -38,12 +38,12 @@ A command-line interface for interacting with the EnSync config management servi
          <b>Extract the Downloaded Archive</b>
          <tabs>
             <tab id="mac-archive-install" title="macOS/Linux">
-            <code-block lang="shell">tar -xvf CLI_1.0.0_{platform}_amd64.tar.gz</code-block>
+            <code-block lang="shell">tar -xvf CLI_1.0.1_{platform}_amd64.tar.gz</code-block>
             </tab>
             <tab id="windows-archive-install" title="Windows">
             <p>For `.zip` files, right-click the file and select **Extract All**, or use `7zip`:</p>
             <code-block>
-               7z x CLI_1.0.0_windows_amd64.zip
+               7z x CLI_1.0.1_windows_amd64.zip
             </code-block>
          </tab>
          </tabs>
@@ -84,7 +84,7 @@ A command-line interface for interacting with the EnSync config management servi
          </code-block>
          To install a specific version:
          <code-block lang="shell">
-            go install github.com/ensync-cli/cmd/ensync@v1.0.0
+            go install github.com/ensync-cli/cmd/ensync@v1.0.1
          </code-block>
          To install the latest version:
          <code-block lang="shell">
