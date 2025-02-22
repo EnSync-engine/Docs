@@ -155,7 +155,7 @@ To set up environment variables on Windows:
 Alternatively, you can configure the CLI using environment variables:
 
 ```bash
-export ENSYNC_BASE_URL="http://localhost:8080/api/v1/ensync"
+export ENSYNC_BASE_URL="http://{url}/api/v1/ensync"
 export ENSYNC_DEBUG=false
 ```
 
