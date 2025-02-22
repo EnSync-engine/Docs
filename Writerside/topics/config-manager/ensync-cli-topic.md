@@ -23,7 +23,7 @@ A command-line interface for interacting with the EnSync config management servi
          <p>Choose the correct download command for your platform.</p>
          <tabs>
             <tab id="mac-extract-install" title="macOS (Darwin)">
-            <code-block lang="shell">curl -L -o CLI_1.0.0_darwin_amd64.tar.gz https://github.com/EnSync-engine/CLI/releases/download/v1.0.0/CLI_1.0.0_darwin_amd64.tar.gz</code-block>
+            <code-block lang="shell">curl -L -o CLI_1.0.1_darwin_amd64.tar.gz https://github.com/EnSync-engine/CLI/releases/download/v1.0.1/CLI_1.0.1_darwin_amd64.tar.gz</code-block>
             </tab>
             <tab id="linux-extract-install" title="Linux">
             <code-block lang="shell">curl -L -o CLI_1.0.0_linux_amd64.tar.gz https://github.com/EnSync-engine/CLI/releases/download/v1.0.0/CLI_1.0.0_linux_amd64.tar.gz</code-block>
